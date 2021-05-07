@@ -1,20 +1,20 @@
 package br.com.zupacademy.samara.propostas.utils.error;
 
+import java.util.Collection;
+
 public class ApiErrorDto {
 
-    private String campo;
-    private String erro;
+    private Collection<String> mensagens;
 
-    public ApiErrorDto(String campo, String erro) {
-        this.campo = campo;
-        this.erro = erro;
+    public ApiErrorDto(Collection<String> mensagens) {
+        this.mensagens = mensagens;
     }
 
-    public String getCampo() {
-        return campo;
+    public Collection<String> getMensagens() {
+        return mensagens;
     }
 
-    public String getErro() {
-        return erro;
+    public void setMensagens(Collection<String> mensagens) {
+        this.mensagens = mensagens;
     }
 }
