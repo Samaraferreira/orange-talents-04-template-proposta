@@ -19,6 +19,8 @@ public class Proposta {
     private String endereco;
     @Column(nullable = false)
     private BigDecimal salario;
+    @Column(nullable = false)
+    private StatusProposta status = StatusProposta.NAO_ANALISADO;
 
     @Deprecated
     public Proposta() {
@@ -54,5 +56,13 @@ public class Proposta {
 
     public BigDecimal getSalario() {
         return salario;
+    }
+
+    public StatusProposta getStatus() {
+        return status;
+    }
+
+    public void setStatus(StatusProposta status) {
+        this.status = status;
     }
 }

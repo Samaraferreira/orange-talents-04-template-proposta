@@ -1,10 +1,12 @@
 package br.com.zupacademy.samara.propostas.proposta;
 
+import br.com.zupacademy.samara.propostas.proposta.avaliacao.AvaliacaoFinanceiraClient;
+import br.com.zupacademy.samara.propostas.proposta.avaliacao.AvaliacaoFinanceiraRequest;
+import feign.FeignException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,6 +25,8 @@ public class PropostaController {
 
     @Autowired
     private PropostaRepository repository;
+    @Autowired
+    private AvaliacaoFinanceiraClient avaliacaoFinanceiraClient;
 
     @PostMapping
     @Transactional
@@ -40,11 +44,27 @@ public class PropostaController {
 
         logger.info("Proposta documento={} salário={} criada com sucesso!", proposta.getDocumento(), proposta.getSalario());
 
+        avaliacaoProposta(proposta);
+
+        repository.save(proposta);
+
+        logger.info("Proposta após avaliação: documento={} salário={} status={}", proposta.getDocumento(), proposta.getSalario(), proposta.getStatus());
+
         URI location = ServletUriComponentsBuilder
                         .fromCurrentRequest()
                         .path("/{id}")
                         .buildAndExpand(proposta.getId())
                         .toUri();
         return ResponseEntity.created(location).build();
+    }
+
+    public void avaliacaoProposta(Proposta proposta) {
+        try {
+            avaliacaoFinanceiraClient.avaliacaoFinanceira(new AvaliacaoFinanceiraRequest(proposta));
+            proposta.setStatus(StatusProposta.ELEGIVEL);
+        } catch (FeignException.UnprocessableEntity e) {
+            logger.warn("Proposta não elegível documento={}",  proposta.getDocumento());
+            proposta.setStatus(StatusProposta.NAO_ELEGIVEL);
+        }
     }
 }
