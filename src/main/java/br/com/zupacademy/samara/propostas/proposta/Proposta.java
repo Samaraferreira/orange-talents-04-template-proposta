@@ -20,7 +20,10 @@ public class Proposta {
     @Column(nullable = false)
     private BigDecimal salario;
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private StatusProposta status = StatusProposta.NAO_ANALISADO;
+
+    private String numeroCartao;
 
     @Deprecated
     public Proposta() {
@@ -64,5 +67,13 @@ public class Proposta {
 
     public void setStatus(StatusProposta status) {
         this.status = status;
+    }
+
+    public String getNumeroCartao() {
+        return numeroCartao;
+    }
+
+    public void setNumeroCartao(String numeroCartao) {
+        this.numeroCartao = numeroCartao;
     }
 }
