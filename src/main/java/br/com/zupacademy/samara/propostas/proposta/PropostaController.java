@@ -8,15 +8,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/propostas")
@@ -34,6 +33,20 @@ public class PropostaController {
         this.repository = repository;
         this.avaliacaoFinanceiraClient = avaliacaoFinanceiraClient;
         this.executorTransacao = executorTransacao;
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PropostaResponse> detalhar(@PathVariable("id") Long id) {
+        Optional<Proposta> proposta = repository.findById(id);
+
+        if (proposta.isEmpty()) {
+            logger.warn("Solicitação de consulta a proposta de id inexistente realizada!");
+            return ResponseEntity.notFound().build();
+        }
+
+        logger.info("Consulta a proposta id {} e documento {} realizada!", proposta.get().getId(), proposta.get().getDocumento());
+
+        return ResponseEntity.ok().body(new PropostaResponse(proposta.get()));
     }
 
     @PostMapping
