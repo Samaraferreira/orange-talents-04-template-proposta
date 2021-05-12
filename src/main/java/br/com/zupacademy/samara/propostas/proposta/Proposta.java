@@ -1,13 +1,14 @@
 package br.com.zupacademy.samara.propostas.proposta;
 
+import br.com.zupacademy.samara.propostas.cartao.Cartao;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
 @Entity
 public class Proposta {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true, nullable = false)
     private String documento;
@@ -22,8 +23,8 @@ public class Proposta {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusProposta status = StatusProposta.NAO_ANALISADO;
-
-    private String numeroCartao;
+    @OneToOne(cascade = CascadeType.MERGE) @JoinColumn(name = "cartao_id")
+    private Cartao cartao;
 
     @Deprecated
     public Proposta() {
@@ -69,11 +70,11 @@ public class Proposta {
         this.status = status;
     }
 
-    public String getNumeroCartao() {
-        return numeroCartao;
+    public Cartao getCartao() {
+        return cartao;
     }
 
-    public void setNumeroCartao(String numeroCartao) {
-        this.numeroCartao = numeroCartao;
+    public void setCartao(Cartao cartao) {
+        this.cartao = cartao;
     }
 }

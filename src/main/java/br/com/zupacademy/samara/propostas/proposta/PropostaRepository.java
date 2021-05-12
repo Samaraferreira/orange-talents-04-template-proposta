@@ -7,5 +7,5 @@ import java.util.Set;
 
 public interface PropostaRepository extends JpaRepository<Proposta, Long> {
     Optional<Proposta> findByDocumento(String documento);
-    Set<Proposta> findByStatusAndNumeroCartaoIsNull(StatusProposta status);
+    Set<Proposta> findByStatusAndCartaoIdIsNull(StatusProposta status);
 }

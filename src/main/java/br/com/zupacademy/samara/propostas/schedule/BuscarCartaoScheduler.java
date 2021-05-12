@@ -1,5 +1,7 @@
-package br.com.zupacademy.samara.propostas.proposta.cartao;
+package br.com.zupacademy.samara.propostas.schedule;
 
+import br.com.zupacademy.samara.propostas.cartao.CartaoClient;
+import br.com.zupacademy.samara.propostas.cartao.CartaoResponse;
 import br.com.zupacademy.samara.propostas.proposta.Proposta;
 import br.com.zupacademy.samara.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.samara.propostas.proposta.StatusProposta;
@@ -35,12 +37,12 @@ public class BuscarCartaoScheduler {
     private void buscarCartoes() {
         logger.info("Verificando cartões para propostas");
 
-        Set<Proposta> propostasElegiveis = propostaRepository.findByStatusAndNumeroCartaoIsNull(StatusProposta.ELEGIVEL);
+        Set<Proposta> propostasElegiveis = propostaRepository.findByStatusAndCartaoIdIsNull(StatusProposta.ELEGIVEL);
 
         propostasElegiveis.forEach(proposta -> {
             try {
                 CartaoResponse cartaoResponse = cartaoClient.getCartao(proposta.getId().toString());
-                proposta.setNumeroCartao(cartaoResponse.getId());
+                proposta.setCartao(cartaoResponse.toModel());
                 executorTransacao.atualizaEComita(proposta);
                 logger.info("Cartão da proposta {} foi criado", proposta.getId());
             } catch (FeignException e) {

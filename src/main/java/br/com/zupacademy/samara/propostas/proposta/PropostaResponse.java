@@ -1,5 +1,6 @@
 package br.com.zupacademy.samara.propostas.proposta;
 
+import br.com.zupacademy.samara.propostas.cartao.Cartao;
 import java.math.BigDecimal;
 
 public class PropostaResponse {
@@ -10,7 +11,7 @@ public class PropostaResponse {
     private String endereco;
     private BigDecimal salario;
     private StatusProposta statusProposta;
-    private String numeroCartao;
+    private Cartao cartao;
 
     public PropostaResponse(Proposta proposta) {
         this.documento = proposta.getDocumento();
@@ -19,7 +20,7 @@ public class PropostaResponse {
         this.nome = proposta.getNome();
         this.endereco = proposta.getEndereco();
         this.statusProposta = proposta.getStatus();
-        this.numeroCartao = proposta.getNumeroCartao();
+        this.cartao = proposta.getCartao();
     }
 
     public String getDocumento() {
@@ -46,7 +47,7 @@ public class PropostaResponse {
         return statusProposta;
     }
 
-    public String getNumeroCartao() {
-        return numeroCartao;
+    public Cartao getCartao() {
+        return cartao;
     }
 }
