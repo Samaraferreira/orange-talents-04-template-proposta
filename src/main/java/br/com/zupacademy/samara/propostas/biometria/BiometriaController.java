@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
@@ -47,4 +46,5 @@ public class BiometriaController {
         URI uri = builder.path("api/biometria/{id}").buildAndExpand(biometria.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
+
 }

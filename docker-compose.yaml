@@ -80,7 +80,7 @@ services:
     restart: always
     container_name: propostas
     ports:
-      - 8080:8080
+      - 8080:8081
     depends_on:
       - analise
       - contas
@@ -126,7 +126,7 @@ services:
       JAEGER_ENDPOINT: http://jaeger:14268/api/traces
 
   jaeger:
-    image: jaegertracing/all-in-one
+    image: jaegertracing/all-in-one:1.21.0
     ports:
       - 5775:5775/udp
       - 6831:6831/udp
@@ -140,18 +140,16 @@ services:
       COLLECTOR_ZIPKIN_HTTP_PORT: 9411
 
   prometheus:
-    image: prom/prometheus
+    image: prom/prometheus:v2.22.0
     volumes:
       - prometheus-volume:/etc/prometheus/
-    network_mode: bridge
     ports:
-      - "9090:9090"
+      - 9090:9090
 
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:7.3.4
     volumes:
       - grafana-volume:/var/lib/grafana
-    network_mode: bridge
     ports:
       - "3000:3000"
     depends_on:

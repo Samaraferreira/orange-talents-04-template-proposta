@@ -1,5 +1,6 @@
 package br.com.zupacademy.samara.propostas.utils.annotations;
 
+import javax.validation.ReportAsSingleViolation;
 import org.hibernate.validator.constraints.CompositionType;
 import org.hibernate.validator.constraints.ConstraintComposition;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -12,9 +13,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@ConstraintComposition(CompositionType.OR)
 @CPF
 @CNPJ
+@ConstraintComposition(CompositionType.OR)
+@ReportAsSingleViolation
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = {})

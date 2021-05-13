@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalDateTime;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -19,6 +20,7 @@ public class Biometria {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     @Column(nullable = false)
     private String impressaoDigital;
 
