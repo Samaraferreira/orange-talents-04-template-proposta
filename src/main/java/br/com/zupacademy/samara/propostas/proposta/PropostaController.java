@@ -78,6 +78,8 @@ public class PropostaController {
             proposta.setStatus(StatusProposta.ELEGIVEL);
         } catch (FeignException.UnprocessableEntity e) {
             proposta.setStatus(StatusProposta.NAO_ELEGIVEL);
+        } catch (FeignException.FeignServerException e) {
+
         }
     }
 }

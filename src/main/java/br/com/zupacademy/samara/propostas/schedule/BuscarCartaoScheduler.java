@@ -1,7 +1,6 @@
 package br.com.zupacademy.samara.propostas.schedule;
 
 import br.com.zupacademy.samara.propostas.cartao.CartaoClient;
-import br.com.zupacademy.samara.propostas.cartao.CartaoResponse;
 import br.com.zupacademy.samara.propostas.proposta.Proposta;
 import br.com.zupacademy.samara.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.samara.propostas.proposta.StatusProposta;

@@ -1,8 +1,6 @@
-package br.com.zupacademy.samara.propostas.cartao;
+package br.com.zupacademy.samara.propostas.schedule;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
+import br.com.zupacademy.samara.propostas.cartao.Cartao;
 import java.time.LocalDateTime;
 import javax.validation.constraints.NotBlank;
 

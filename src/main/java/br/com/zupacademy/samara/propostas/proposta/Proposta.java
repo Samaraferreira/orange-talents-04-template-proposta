@@ -23,7 +23,7 @@ public class Proposta {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private StatusProposta status = StatusProposta.NAO_ANALISADO;
-    @OneToOne(cascade = CascadeType.MERGE) @JoinColumn(name = "cartao_id")
+    @OneToOne(cascade = CascadeType.ALL) @JoinColumn(name = "cartao_id")
     private Cartao cartao;
 
     @Deprecated
