@@ -59,9 +59,9 @@ public class BloqueioController {
             return ResponseEntity.unprocessableEntity().build();
         }
 
-        if (!email.equals(cartao.getEmail())) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+//        if (!email.equals(cartao.getEmailProposta())) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+//        }
 
         try {
             Bloqueio bloqueio = new Bloqueio(httpRequest.getRemoteAddr(), httpRequest.getHeader("User-Agent"), cartao);

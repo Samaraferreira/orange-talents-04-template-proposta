@@ -26,9 +26,6 @@ public class Cartao {
     @Enumerated(EnumType.STRING)
     private StatusCartao status = StatusCartao.OK;
 
-    @OneToOne(mappedBy = "cartao", fetch = FetchType.EAGER)
-    private Proposta proposta;
-
     @Deprecated
     public Cartao() {
     }
@@ -54,11 +51,4 @@ public class Cartao {
         this.status = status;
     }
 
-    public Proposta getProposta() {
-        return proposta;
-    }
-
-    public String getEmail() {
-        return proposta.getEmail();
-    }
 }
