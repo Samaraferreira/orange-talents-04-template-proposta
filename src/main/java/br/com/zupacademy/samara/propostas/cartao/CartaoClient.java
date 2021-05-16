@@ -4,6 +4,8 @@ import br.com.zupacademy.samara.propostas.cartao.bloqueio.BloqueioRequestFeign;
 import br.com.zupacademy.samara.propostas.cartao.bloqueio.BloqueioResponseFeign;
 import br.com.zupacademy.samara.propostas.cartao.viagem.AvisoViagemRequestFeign;
 import br.com.zupacademy.samara.propostas.cartao.viagem.AvisoViagemResponseFeign;
+import br.com.zupacademy.samara.propostas.carteira.CarteiraRequestFeign;
+import br.com.zupacademy.samara.propostas.carteira.CarteiraResponseFeign;
 import br.com.zupacademy.samara.propostas.schedule.CartaoResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,5 +25,8 @@ public interface CartaoClient {
 
     @PostMapping("/{id}/avisos")
     public AvisoViagemResponseFeign avisoViagem(@PathVariable(name = "id") String id, @RequestBody AvisoViagemRequestFeign request);
+
+    @PostMapping("/{id}/carteiras")
+    public CarteiraResponseFeign adicionarCarteira(@PathVariable(name = "id") String id, @RequestBody CarteiraRequestFeign request);
 }
 
