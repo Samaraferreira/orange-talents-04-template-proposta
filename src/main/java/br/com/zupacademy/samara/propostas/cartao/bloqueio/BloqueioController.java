@@ -5,7 +5,6 @@ import br.com.zupacademy.samara.propostas.cartao.CartaoClient;
 import br.com.zupacademy.samara.propostas.cartao.CartaoRepository;
 import br.com.zupacademy.samara.propostas.cartao.StatusCartao;
 import br.com.zupacademy.samara.propostas.proposta.PropostaController;
-import br.com.zupacademy.samara.propostas.proposta.PropostaRepository;
 import br.com.zupacademy.samara.propostas.utils.ExecutorTransacao;
 import feign.FeignException;
 import java.util.Optional;
@@ -13,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -65,8 +63,8 @@ public class BloqueioController {
 
         try {
             Bloqueio bloqueio = new Bloqueio(httpRequest.getRemoteAddr(), httpRequest.getHeader("User-Agent"), cartao);
-            BloqueioRequest bloqueioRequest = new BloqueioRequest();
-            cartaoClient.bloquearCartao(cartao.getNumero(), bloqueioRequest);
+            BloqueioRequestFeign bloqueioRequestFeign = new BloqueioRequestFeign();
+            cartaoClient.bloquearCartao(cartao.getNumero(), bloqueioRequestFeign);
             cartao.setStatus(StatusCartao.BLOQUEADO);
             executorTransacao.executa(()-> bloqueioRepository.save(bloqueio));
             executorTransacao.executa(()-> cartaoRepository.save(cartao));
