@@ -5,6 +5,8 @@ import br.com.zupacademy.samara.propostas.proposta.avaliacao.AvaliacaoFinanceira
 import br.com.zupacademy.samara.propostas.utils.ExecutorTransacao;
 import feign.FeignException;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.opentracing.Span;
+import io.opentracing.Tracer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,14 +28,16 @@ public class PropostaController {
     private AvaliacaoFinanceiraClient avaliacaoFinanceiraClient;
     private ExecutorTransacao executorTransacao;
     private MeterRegistry meterRegistry;
+    private Tracer tracer;
 
     @Autowired
     public PropostaController(PropostaRepository repository, AvaliacaoFinanceiraClient avaliacaoFinanceiraClient,
-                              ExecutorTransacao executorTransacao, MeterRegistry meterRegistry) {
+                              ExecutorTransacao executorTransacao, MeterRegistry meterRegistry, Tracer tracer) {
         this.repository = repository;
         this.avaliacaoFinanceiraClient = avaliacaoFinanceiraClient;
         this.executorTransacao = executorTransacao;
         this.meterRegistry = meterRegistry;
+        this.tracer = tracer;
     }
 
     @GetMapping("/{id}")
@@ -76,6 +80,8 @@ public class PropostaController {
 
     public void avaliacaoProposta(Proposta proposta) {
         try {
+            Span activeSpan = tracer.activeSpan();
+            activeSpan.setBaggageItem("user.email", proposta.getEmail());
             avaliacaoFinanceiraClient.avaliacaoFinanceira(new AvaliacaoFinanceiraRequest(proposta));
             proposta.setStatus(StatusProposta.ELEGIVEL);
         } catch (FeignException.UnprocessableEntity e) {

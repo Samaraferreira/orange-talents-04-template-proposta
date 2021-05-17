@@ -33,7 +33,7 @@ public class BuscarCartaoScheduler {
 
     @Scheduled(fixedDelayString = "${periodicidade.executa-operacao}")
     @Transactional
-    private void buscarCartoes() {
+    public void buscarCartoes() {
         logger.info("Verificando cartões para propostas");
 
         Set<Proposta> propostasElegiveis = propostaRepository.findByStatusAndCartaoIdIsNull(StatusProposta.ELEGIVEL);
