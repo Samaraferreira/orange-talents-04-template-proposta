@@ -4,7 +4,9 @@ import br.com.zupacademy.samara.propostas.proposta.avaliacao.AvaliacaoFinanceira
 import br.com.zupacademy.samara.propostas.proposta.avaliacao.AvaliacaoFinanceiraRequest;
 import br.com.zupacademy.samara.propostas.utils.ExecutorTransacao;
 import feign.FeignException;
-import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Metrics;
 import io.opentracing.Span;
 import io.opentracing.Tracer;
 import org.slf4j.Logger;
@@ -27,35 +29,33 @@ public class PropostaController {
     private PropostaRepository repository;
     private AvaliacaoFinanceiraClient avaliacaoFinanceiraClient;
     private ExecutorTransacao executorTransacao;
-    private MeterRegistry meterRegistry;
     private Tracer tracer;
 
     @Autowired
     public PropostaController(PropostaRepository repository, AvaliacaoFinanceiraClient avaliacaoFinanceiraClient,
-                              ExecutorTransacao executorTransacao, MeterRegistry meterRegistry, Tracer tracer) {
+                              ExecutorTransacao executorTransacao, Tracer tracer) {
         this.repository = repository;
         this.avaliacaoFinanceiraClient = avaliacaoFinanceiraClient;
         this.executorTransacao = executorTransacao;
-        this.meterRegistry = meterRegistry;
         this.tracer = tracer;
     }
 
+    @Timed(value = "consultar.propostas")
     @GetMapping("/{id}")
     public ResponseEntity<PropostaResponse> consultarProposta(@PathVariable("id") Long id) {
-        return meterRegistry.timer("consultar_proposta").record(() -> {
-            Optional<Proposta> proposta = executorTransacao.executa(() -> repository.findById(id));
+        Optional<Proposta> proposta = executorTransacao.executa(() -> repository.findById(id));
 
-            if (proposta.isEmpty()) {
-                logger.warn("Solicitação de consulta a proposta de id inexistente realizada!");
-                return ResponseEntity.notFound().build();
-            }
+        if (proposta.isEmpty()) {
+            logger.warn("Solicitação de consulta a proposta de id inexistente realizada!");
+            return ResponseEntity.notFound().build();
+        }
 
-            logger.info("Consulta a proposta de documento {} realizada!", proposta.get().getId(), proposta.get().getDocumento());
+        logger.info("Consulta a proposta de documento {} realizada!", proposta.get().getDocumento());
 
-            return ResponseEntity.ok().body(new PropostaResponse(proposta.get()));
-        });
+        return ResponseEntity.ok().body(new PropostaResponse(proposta.get()));
     }
 
+    @Timed(value = "criar.propostas")
     @PostMapping
     public ResponseEntity<?> criarProposta(@RequestBody @Valid PropostaRequest request, UriComponentsBuilder builder) {
         Boolean existeDocumento = executorTransacao.executa(() -> repository.findByDocumento(request.getDocumento()).isEmpty());
@@ -70,9 +70,12 @@ public class PropostaController {
         logger.info("Proposta documento={} salário={} criada com sucesso!", proposta.getDocumento(), proposta.getSalario());
 
         avaliacaoProposta(proposta);
-        executorTransacao.atualizaEComita(proposta);
-        meterRegistry.counter("proposta_criada").increment();
         logger.info("Proposta após avaliação: documento={} salário={} status={}", proposta.getDocumento(), proposta.getSalario(), proposta.getStatus());
+
+        executorTransacao.atualizaEComita(proposta);
+
+        Counter contadorParedao = Metrics.counter("propostas_criadas");
+        contadorParedao.increment();
 
         URI uri = builder.path("api/propostas/{id}").buildAndExpand(proposta.getId()).toUri();
         return ResponseEntity.created(uri).build();
@@ -86,8 +89,6 @@ public class PropostaController {
             proposta.setStatus(StatusProposta.ELEGIVEL);
         } catch (FeignException.UnprocessableEntity e) {
             proposta.setStatus(StatusProposta.NAO_ELEGIVEL);
-        } catch (FeignException.FeignServerException e) {
-
         }
     }
 }
