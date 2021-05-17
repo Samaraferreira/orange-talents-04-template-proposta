@@ -2,6 +2,7 @@ package br.com.zupacademy.samara.propostas.proposta;
 
 import br.com.zupacademy.samara.propostas.cartao.Cartao;
 
+import br.com.zupacademy.samara.propostas.utils.DocumentoConverter;
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -10,7 +11,7 @@ public class Proposta {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, nullable = false) @Convert(converter = DocumentoConverter.class)
     private String documento;
     @Column(nullable = false)
     private String email;
