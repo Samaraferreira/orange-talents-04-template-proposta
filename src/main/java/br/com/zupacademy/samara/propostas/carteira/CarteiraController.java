@@ -44,11 +44,12 @@ public class CarteiraController {
     public ResponseEntity adicionarCarteira(@PathVariable("id") Long id, @RequestBody @Valid CarteiraRequest carteiraRequest,
                                             UriComponentsBuilder uriComponentsBuilder) {
         Optional<Cartao> cartaoOpt = cartaoRepository.findById(id);
-        Cartao cartao = cartaoOpt.get();
 
         if (cartaoOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        Cartao cartao = cartaoOpt.get();
 
         if (cartao.getStatus() == StatusCartao.BLOQUEADO) {
             return ResponseEntity.badRequest().build();

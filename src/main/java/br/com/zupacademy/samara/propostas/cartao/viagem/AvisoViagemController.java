@@ -43,11 +43,12 @@ public class AvisoViagemController {
                                  @PathVariable("id") Long id, HttpServletRequest httpRequest) {
 
         Optional<Cartao> cartaoOpt = cartaoRepository.findById(id);
-        Cartao cartao = cartaoOpt.get();
 
         if (cartaoOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        Cartao cartao = cartaoOpt.get();
 
         if (cartao.getStatus() == StatusCartao.BLOQUEADO) {
             return ResponseEntity.badRequest().build();

@@ -44,14 +44,15 @@ public class BloqueioController {
     public ResponseEntity<?> bloquearCartao(@AuthenticationPrincipal Jwt usuario,
                                             HttpServletRequest httpRequest,
                                             @PathVariable("id") Long id) {
-
         Optional<Cartao> cartaoOpt = cartaoRepository.findById(id);
-        Cartao cartao = cartaoOpt.get();
-        var email = usuario.getClaims().get("email");
+
+//        var email = usuario.getClaims().get("email");
 
         if (cartaoOpt.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
+
+        Cartao cartao = cartaoOpt.get();
 
         if (cartao.getStatus() == StatusCartao.BLOQUEADO) {
             return ResponseEntity.unprocessableEntity().build();
